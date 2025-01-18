@@ -2,6 +2,7 @@ package gsheets
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 
 	"golang.org/x/oauth2/jwt"
@@ -24,7 +25,16 @@ type Credenciales struct {
 	Universe_domain             string `json:universe_domain`
 }
 
-func ObtenerClienteGSheets(c Credenciales, dominio []string, correo string) (*sheets.Service, error) {
+func (c Credenciales) String() string {
+	b, err := json.Marshal(c)
+	if err != nil {
+		panic(69) //<HACER/>
+	}
+
+	return string(b)
+}
+
+func ObtenerServicioGSheets(c Credenciales, dominio []string, correo string) (*sheets.Service, error) {
 	// Your credentials should be obtained from the Google
 	// Developer Console (https://console.developers.google.com).
 

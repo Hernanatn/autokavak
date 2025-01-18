@@ -6,33 +6,47 @@ import (
 	"kavak/data"
 	"kavak/gsheets"
 	"os"
-	"slices"
 	"strings"
 
 	"github.com/hernanatn/aplicacion.go"
+	"github.com/hernanatn/aplicacion.go/consola"
 	"github.com/hernanatn/aplicacion.go/consola/cadena"
 	"google.golang.org/api/sheets/v4"
 )
 
 var programa aplicacion.Aplicacion
-var cliente *sheets.Service
+var servicio *sheets.Service
 
 func inicializar(a aplicacion.Aplicacion, args ...string) error {
-	if len(args) <= 0 || len(args) > 0 && !slices.Contains(args, "--sin-ini") {
-	}
-	var c *gsheets.Credenciales
-	json.Unmarshal(data.CREDENCIALES, c)
-
-	var dominios []string = []string{}
-	cliente, err := gsheets.ObtenerClienteGSheets(c, dominios, "mike@mike.mike")
+	var err error
+	var CREDENCIALES gsheets.Credenciales
+	err = json.Unmarshal(data.CREDENCIALES, &CREDENCIALES)
 	if err != nil {
+		a.ImprimirFatal("No se pudo leer las credenciales", err)
 		return err
 	}
+
+	var dominios []string = []string{
+		"https://www.googleapis.com/auth/spreadsheets",
+		"https://www.googleapis.com/auth/drive",
+	}
+	servicio, err = gsheets.ObtenerServicioGSheets(CREDENCIALES, dominios, data.CORREO)
+	if err != nil {
+		a.ImprimirFatal("No se pudo crear el servicio de Google Sheets", err)
+		return err
+	}
+
+	//var opciones googleapi.CallOption
+
 	return nil
 }
 
 func finalizar(a aplicacion.Aplicacion, args ...string) error {
 	a.ImprimirLinea(aplicacion.Cadena("¡Adiós!"))
+	return nil
+}
+
+func limpiar(a aplicacion.Aplicacion, args ...string) error {
 	return nil
 }
 
@@ -45,13 +59,8 @@ func init() {
 		aplicacion.NuevaConsola(os.Stdin, os.Stdout),
 	).
 		RegistrarInicio(inicializar).
-		RegistrarFinal(finalizar)
-
-	var CREDENCIALES gsheets.Credenciales
-	err := json.Unmarshal(data.CREDENCIALES, &CREDENCIALES)
-	if err != nil {
-		panic(69)
-	}
+		RegistrarLimpieza(finalizar).
+		RegistrarFinal(limpiar)
 }
 
 func main() {
@@ -66,7 +75,22 @@ func main() {
 				var autos []string
 				con.ImprimirLinea(aplicacion.Cadena("ajustar"))
 
-				cliente.Spreadsheets.Get("[ID_HOJA]")
+				const idHoja string = data.ID_HOJA
+				const rango string = "A1:D2"
+				respuesta, err := servicio.Spreadsheets.Values.Get(idHoja, rango).Do()
+				if err != nil {
+					con.ImprimirFatal(consola.Cadena(fmt.Sprintf("No se pudo leer el rango solicitado. Id hoja: %s | Rango: %s ", idHoja, rango)), nil)
+					return nil, aplicacion.ERROR, err
+				}
+
+				if len(respuesta.Values) < 1 {
+					con.ImprimirAdvertencia(consola.Cadena(fmt.Sprintf("No se encontró data en el rango solicitado. Id hoja: %s | Rango: %s ", idHoja, rango)), nil)
+					return nil, aplicacion.ERROR, err
+				}
+
+				for _, fila := range respuesta.Values {
+					con.ImprimirLinea(consola.Cadena(fmt.Sprintf("%s", fila)))
+				}
 
 				if len(autos) < 10 {
 					continuar, err := con.Leer("Hay menos de diez autos nuevos.\n¿Continuar? [S/n]\n")
@@ -99,7 +123,5 @@ func main() {
 	if res != nil {
 		// [HACER] ver si sirve que suba el output hasta main...
 	}
-
 	// LEER SUCCESS
-
 }
