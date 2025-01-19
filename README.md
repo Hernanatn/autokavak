@@ -33,6 +33,5 @@ La implementación de la herramienta está profundamente acoplada a la estructur
 
 
 #### Licencia
-Ud. puede hacer lo que se le cante con el código, el cual se provee como está y por el cual ni su autor, Hernán A. Teszkiewicz Novick, ni Ch'aska S.R.L., ni Price se hacen responsables.
-
+Ud. puede hacer lo que se le cante con el código, el cual se provee como está y por el cual ni su autor, Hernán A. Teszkiewicz Novick, ni Ch'aska S.R.L.
 Ver [Licencia](LICENSE)
