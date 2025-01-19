@@ -3,7 +3,11 @@ package gsheets
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"log"
+	"math"
+	"reflect"
+	"time"
 
 	"golang.org/x/oauth2/jwt"
 
@@ -11,6 +15,7 @@ import (
 	"google.golang.org/api/sheets/v4"
 )
 
+type Servicio = sheets.Service
 type Credenciales struct {
 	Type                        string `json:type`
 	Project_id                  string `json:project_id`
@@ -56,4 +61,76 @@ func ObtenerServicioGSheets(c Credenciales, dominio []string, correo string) (*s
 		return nil, err
 	}
 	return servicio, nil
+}
+
+func EsperarYLeer(servicio *sheets.Service, idhoja, rango string, intentosMaximos int, retardoBase time.Duration) ([][]any, error) {
+	//intentosMaximos := 6
+	//retardoBase := time.Second * 1 / 2
+
+	var ultimosValores [][]interface{}
+
+	for intento := 0; intento < intentosMaximos; intento++ {
+		resp, err := servicio.Spreadsheets.Values.Get(idhoja, rango).
+			ValueRenderOption("FORMATTED_VALUE").Do()
+		if err != nil {
+			return nil, err
+		}
+
+		valoresActuales := resp.Values
+
+		switch {
+		case ultimosValores != nil && reflect.DeepEqual(ultimosValores, valoresActuales):
+			return valoresActuales, nil
+		}
+
+		ultimosValores = valoresActuales
+
+		retardo := retardoBase * time.Duration(math.Pow(2, float64(intento)))
+		time.Sleep(retardo)
+	}
+
+	return nil, fmt.Errorf("la hoja de calculo no se estabilizó después de %d intentos", intentosMaximos)
+}
+
+func EsperarYLeerCondicion(servicio *sheets.Service, idhoja, rango string, intentosMaximos int, retardoBase time.Duration, celda [2]int, condicion any) ([][]any, error) {
+	//intentosMaximos := 6
+	//retardoBase := time.Second * 1 / 2
+
+	for intento := 0; intento < intentosMaximos; intento++ {
+		resp, err := servicio.Spreadsheets.Values.Get(idhoja, rango).
+			ValueRenderOption("FORMATTED_VALUE").Do()
+		if err != nil {
+			return nil, err
+		}
+
+		valoresActuales := resp.Values
+
+		switch {
+		case !reflect.DeepEqual(valoresActuales[celda[0]][celda[1]], condicion):
+			return valoresActuales, nil
+		}
+
+		retardo := retardoBase * time.Duration(math.Pow(2, float64(intento)))
+		time.Sleep(retardo)
+	}
+
+	return nil, fmt.Errorf("la hoja de calculo no se estabilizó después de %d intentos", intentosMaximos)
+}
+
+func ConvertirValoresGSaCSV(valores [][]any) ([][]string, error) {
+	var csvSalida [][]string
+
+	for f, fila := range valores {
+		var estaFila []string
+		for c, celda := range fila {
+			cs, ok := celda.(string)
+			if !ok {
+				return csvSalida, fmt.Errorf("NO SE PUDO COERCIONAR UN VALOR A CSV: %d:%d | %v", f, c, celda)
+			}
+			estaFila = append(estaFila, cs)
+		}
+		csvSalida = append(csvSalida, estaFila)
+	}
+
+	return csvSalida, nil
 }

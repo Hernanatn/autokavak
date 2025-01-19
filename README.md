@@ -24,7 +24,8 @@ fuente
 var CREDENCIALES []byte
 
 const CORREO string // ID del correo que se usará como alias para las acciones que realice la cuenta de servicio
-const ID_HOJA string // ID de la hoja a leer
+const IDHOJA_PUBLICAR string // ID de la hoja a leer
+const IDHOJA_AJUSTAR string // ID de la hoja a leer
 
 ```
 
