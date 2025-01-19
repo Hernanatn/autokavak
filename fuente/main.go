@@ -199,7 +199,7 @@ func init() {
 	programa = aplicacion.NuevaAplicacion(
 		"Kavak",
 		"kavak <opciones> [comando]",
-		"aplicación que reemplaza el trabajo de mike en kavak.",
+		"Herramienta de gestión de precios y publicaciones de Kavak",
 		make([]string, 0),
 		aplicacion.NuevaConsola(os.Stdin, os.Stdout),
 	).
@@ -207,7 +207,7 @@ func init() {
 		RegistrarLimpieza(finalizar).
 		RegistrarFinal(limpiar)
 
-	if runtime.GOOS == "windows" {
+	if strings.Contains(runtime.GOOS, "windows") {
 		stdout := windows.Handle(os.Stdout.Fd())
 		var originalMode uint32
 
@@ -241,7 +241,7 @@ func main() {
 
 					//return nil, aplicacion.ERROR, errors.Join(err, con.ImprimirAdvertencia(consola.Cadena(fmt.Sprintf("La lista de autos no está actualizada. Ultima fecha registrada: %v | Estado de actualización BDD: %v\nAbortando programa..", actualizado, exito)), nil))
 				}
-				con.ImprimirLinea("Analizando Autos sin precio.")
+				con.ImprimirLinea(cadena.Subtitulo("Analizando Autos sin precio."))
 				const rangoAutosNuevos string = data.RANGO_PUBLICAR_AJUSTE
 
 				respuesta, err := servicio.Spreadsheets.Values.Get(idLibro, rangoAutosNuevos).Do()
@@ -313,7 +313,7 @@ func main() {
 				}
 				con.ImprimirLinea(consola.Cadena(cadena.Exito("Todos los ajustes necesarios cargados")))
 				con.ImprimirSeparador()
-				con.ImprimirLinea("Filtramos autos que se pueden publicar")
+				con.ImprimirLinea(cadena.Subtitulo("Filtrando autos que se pueden publicar"))
 				var autosFiltrados [][]any
 				for fila, auto := range autosNuevos {
 					if pp, ok := auto[data.COLUMNA_PUEDE_PUBLICAR].(string); ok {
@@ -334,6 +334,9 @@ func main() {
 				con.ImprimirLinea(consola.Cadena(cadena.Exito(fmt.Sprintf("Autos publicados: %d", len(autosFiltrados)))).Colorear(color.AzulFondo))
 				con.ImprimirSeparador()
 
+				con.ImprimirLinea("+----------+-----------------+-------------------------+---------+----------+--------+--------------+---------+--------+")
+				con.ImprimirLinea(cadena.Cadena(fmt.Sprintf("| %-8s | %-15s | %-23s | %-7s | %-8s | %-6s | %-12s | %-7s | %-6s |", "#Stock", "Marca", "Modelo", " Año ", "Kilom.", "PIX F", "Sell Price", "GM", " .% ")).Negrita())
+				con.ImprimirLinea("+----------+-----------------+-------------------------+---------+----------+--------+--------------+---------+--------+")
 				for fila, auto := range autosFiltrados {
 					pixr2stemp, ok1 := auto[data.COLUMNA_PIX_R2S].(string)
 					ajustetemp, ok2 := auto[data.COLUMNA_AJUSTE].(string)
@@ -401,13 +404,16 @@ func main() {
 
 					gmp := (gmf * DOLAR_KAVAK / pv) * 100
 					autosFiltrados[fila][data.COLUMNA_GM_P] = fmt.Sprintf("%.0f%%", math.Round(gmp))
+					var tabla []any = auto[data.COLUMNA_STOCK_ID : data.COLUMNA_KM+1]
+					tabla = append(tabla, auto[data.COLUMNA_PIX_F:data.COLUMNA_GM_P+1]...)
 
-					con.ImprimirLinea(consola.Cadena(fmt.Sprintf("%v %v", auto[0:5], auto[21:26])))
+					con.ImprimirLinea(cadena.Cadena(fmt.Sprintf("| %-8s | %-15s | %-23s | %-7s | %-8s | %-6s | %-12s | %-7s | %-6s |", tabla...)))
 					//SI(O(K3="Utilitarian";K3="Pick up";K3="Van");
 					//	Si (X3/1,105/BUSCARDOLAR_KAVAK)-PT_USD-DM_USD;
 					//	Sino (X3/1,21/BUSCARDOLAR_KAVAK)-PT_USD-DM_USD))
 					//fmt.Println(autosFiltrados[fila])
 				}
+				con.ImprimirLinea("+----------+-----------------+-------------------------+---------+----------+--------+--------------+---------+--------+")
 
 				respuesta, err = servicio.Spreadsheets.Values.Get(data.ID_LIBRO_PUBLICAR, data.RANGO_CANTIDAD_HISTORICOS).Do()
 				if err != nil {
@@ -441,6 +447,7 @@ func main() {
 					return nil, aplicacion.ERROR, errors.Join(err, con.ImprimirLinea(aplicacion.Cadena(cadena.Fatal("No se pudo escribir el ajuste a la hoja", err))))
 				}
 
+				con.ImprimirLinea("")
 				con.ImprimirLinea(consola.Cadena(cadena.Exito("Copiado a Historico PIXR2S")))
 
 				tablaFP, err := gsheets.EsperarYLeerCondicion(servicio, data.ID_LIBRO_PUBLICAR, data.RANGO_CARGA_FP, data.INTENTOS_MAXIMOS, data.RETARDO_BASE, [2]int{0, 0}, CONDICION_FP)
@@ -450,7 +457,7 @@ func main() {
 
 				con.ImprimirLinea(consola.Cadena(cadena.Exito("Carga First Publish actualizado.")).Colorear(color.AzulFondo))
 				con.ImprimirSeparador()
-				con.ImprimirLinea("Creando CSV.")
+				con.ImprimirLinea(cadena.Subtitulo("Creando CSV."))
 
 				csvSalida, err = gsheets.ConvertirValoresGSaCSV(tablaFP)
 				if err != nil {
