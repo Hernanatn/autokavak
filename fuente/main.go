@@ -301,9 +301,13 @@ func main() {
 
 				for fila, auto := range autosFiltrados {
 					var ajuste float64 = 0
-					pixr2s, err1 := auto[data.COLUMNA_PIX_R2S].Flotante()
-					ajuste, err2 := auto[data.COLUMNA_AJUSTE].Flotante()
-					err := errors.Join(err1, err2)
+					pixr2s, err := auto[data.COLUMNA_PIX_R2S].Flotante()
+					a := auto[data.COLUMNA_AJUSTE].Cadena()
+					if len(a) > 0 {
+						var e error
+						ajuste, e = auto[data.COLUMNA_AJUSTE].Flotante()
+						err = errors.Join(err, e)
+					}
 					if err != nil {
 						return nil, aplicacion.ERROR, errors.Join(err, con.ImprimirFatal(cadena.CadenaFmt("No se encontró un valor válido para PIX_R2S o AJUSTE: %s", auto), err))
 					}

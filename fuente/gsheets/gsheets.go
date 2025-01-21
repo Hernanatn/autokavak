@@ -127,7 +127,7 @@ func (t TablaValores) Anys() [][]any {
 	for _, f := range t {
 		var fila []any
 		for _, c := range f {
-			fila = append(fila, c)
+			fila = append(fila, c.Valor)
 		}
 		matriz = append(matriz, fila)
 	}
