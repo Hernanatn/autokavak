@@ -3,7 +3,7 @@ module github.com/hernanatn/autokavak
 go 1.22.5
 
 require (
-	github.com/hernanatn/aplicacion.go v0.2.8-beta
+	github.com/hernanatn/aplicacion.go v0.3.0
 	golang.org/x/oauth2 v0.25.0
 	golang.org/x/sys v0.29.0
 	google.golang.org/api v0.217.0

@@ -27,8 +27,8 @@ github.com/googleapis/enterprise-certificate-proxy v0.3.4 h1:XYIDZApgAnrN1c855gT
 github.com/googleapis/enterprise-certificate-proxy v0.3.4/go.mod h1:YKe7cfqYXjKGpGvmSg28/fFvhNzinZQm8DGnaburhGA=
 github.com/googleapis/gax-go/v2 v2.14.1 h1:hb0FFeiPaQskmvakKu5EbCbpntQn48jyHuvrkurSS/Q=
 github.com/googleapis/gax-go/v2 v2.14.1/go.mod h1:Hb/NubMaVM88SrNkvl8X/o8XWwDJEPqouaLeN2IUxoA=
-github.com/hernanatn/aplicacion.go v0.2.8-beta h1:6tGSCtUxsOf/Xwi0kOOREtSQctNaY+TJk0s2T+1U7K8=
-github.com/hernanatn/aplicacion.go v0.2.8-beta/go.mod h1:5Moay9hKA/fr5GQjquN2pXhqaGeYTwDlJNyAg/noW0k=
+github.com/hernanatn/aplicacion.go v0.3.0 h1:F+UzYOrz+gJD3bykZem8t9X4C9dCNG9oigkKkl7qR4g=
+github.com/hernanatn/aplicacion.go v0.3.0/go.mod h1:5Moay9hKA/fr5GQjquN2pXhqaGeYTwDlJNyAg/noW0k=
 github.com/mattn/go-runewidth v0.0.16 h1:E5ScNMtiwvlvB5paMFdw9p4kSQzbXFikJ5SQO6TULQc=
 github.com/mattn/go-runewidth v0.0.16/go.mod h1:Jdepj2loyihRzMpdS35Xk/zdY8IAYHsh153qUoGf23w=
 github.com/mitchellh/colorstring v0.0.0-20190213212951-d06e56a500db h1:62I3jR2EmQ4l5rM/4FEfDWcRD+abF5XlKShorW5LRoQ=
