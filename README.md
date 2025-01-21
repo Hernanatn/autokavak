@@ -1,5 +1,5 @@
-# autokavak
-Herramienta de linea de comandos escrita en Go que realiza las tareas del maikintosh en Kavak
+# autoprice
+Herramienta de linea de comandos escrita en Go que realiza las tareas del maikintosh en Price
 
 <!-- <img src="https://img.shields.io/badge/hecho_por-Ch'aska-253545?style=for-the-badge" alt="hecho_por_Chaska" height="25px"/> -->
  <img src="https://img.shields.io/badge/Go-1.22-blue?style=for-the-badge&logo=go&logoColor=white" alt="C++" height="25px"/> <a href=https://www.raylib.com>
@@ -29,10 +29,9 @@ const IDHOJA_AJUSTAR string // ID de la hoja a leer
 
 ```
 
-La implementación de la herramienta está profundamente acoplada a la estructura de la hoja que se utiliza como fuente. Sin embargo, ofrecer la estructura de esta hoja violaría el secreto profesional y provablemente sería un ataque a la propiedad de Kavak. Esta situación no debiera presentar un problema ya que esta herramienta tiene un solo usuario pretendido, el cual es autor de la hoja necesaria - y de todas formas no presenta valor para ningun usuario salvo el depto. de [?] de Kavak. Se publica únicamente con el proposito de proveer un ejemplo de herramienta real y funcional creada con [`aplicacion.go`](https://github.com/hernanatn/aplicacion.go).
+La implementación de la herramienta está profundamente acoplada a la estructura de la hoja que se utiliza como fuente. Sin embargo, ofrecer la estructura de esta hoja violaría el secreto profesional y provablemente sería un ataque a la propiedad de Price. Esta situación no debiera presentar un problema ya que esta herramienta tiene un solo usuario pretendido, el cual es autor de la hoja necesaria - y de todas formas no presenta valor para ningun usuario salvo el depto. de [?] de Price. Se publica únicamente con el proposito de proveer un ejemplo de herramienta real y funcional creada con [`aplicacion.go`](https://github.com/hernanatn/aplicacion.go).
 
 
 #### Licencia
-Ud. puede hacer lo que se le cante con el código, el cual se provee como está y por el cual ni su autor, Hernán A. Teszkiewicz Novick, ni Ch'aska S.R.L., ni Kavak se hacen responsables.
-
+Ud. puede hacer lo que se le cante con el código, el cual se provee como está y por el cual ni sus autores, Hernán A. Teszkiewicz Novick y Miguel Chodos Figueiredo, ni Ch'aska S.R.L. se hacen respomsables
 Ver [Licencia](LICENSE)
